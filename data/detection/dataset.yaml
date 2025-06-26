@@ -1,0 +1,9 @@
+path: .  
+train: ./data/detection/train/images
+val: ./data/detection/val/images
+
+names:
+  0: dish
+  1: tray
+
+nc: 2

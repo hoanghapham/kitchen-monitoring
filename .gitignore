@@ -1,8 +1,9 @@
 # Custom
-data/*
 models/*
 runs/*
 .DS_Store
+*.mp4
+*.cache
 
 # Python-generated files
 __pycache__/

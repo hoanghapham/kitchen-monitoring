@@ -1,9 +1,11 @@
 # Custom
 models/*
 runs/*
+workpad/*
 .DS_Store
 *.mp4
 *.cache
+*_split
 
 # Python-generated files
 __pycache__/

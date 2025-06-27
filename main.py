@@ -25,6 +25,8 @@ def process_video(
         detector: YOLO, 
         dish_classifier: YOLO, 
         tray_classifier: YOLO,
+        conf: float = 0.25,
+        iou: float = 0.7,
         device="cpu"
     ):
 
@@ -41,8 +43,8 @@ def process_video(
         tracking_results    = detector.track(
             frame, 
             persist=True, 
-            conf=0.1, 
-            iou=0.7, 
+            conf=conf, 
+            iou=iou, 
             imgsz=(width, height),
             device=device
         )
@@ -79,6 +81,9 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--input-video", "-i", type=str, required=True)
     parser.add_argument("--output-video", "-o", type=str, required=True)
+    parser.add_argument("--conf", type=float, default=0.25)
+    parser.add_argument("--iou", type=float, default=0.7)
+
 
     args            = parser.parse_args()
     INPUT_VIDEO     = Path(args.input_video)

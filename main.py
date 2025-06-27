@@ -1,8 +1,10 @@
 import cv2
+import numpy as np
 from pathlib import Path
 from argparse import ArgumentParser
-from ultralytics import YOLO
 from PIL import Image
+from collections import defaultdict
+from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
 from kitchen.visual_tasks import crop_image
 
@@ -29,6 +31,7 @@ def process_video(
         iou: float = 0.7,
         device="cpu"
     ):
+    track_history = defaultdict(lambda: [])
 
     # Iterate through the frames in the video
     while True:
@@ -57,6 +60,14 @@ def process_video(
 
             # Iterate through tracking results, classify dish and tray
             for bbox, cls, name, track_id in zip(boxes, classes, names, track_ids):
+                center_x = (bbox[0] + bbox[2]) // 2
+                center_y = (bbox[1] + bbox[3]) // 2
+                
+                # Track center of the box
+                track_history[track_id].append((center_x, center_y))
+                if len(track_history[track_id]) > 30:
+                    track_history[track_id].pop(0)
+
                 cropped = crop_image(frame, bbox)
                 # cropped = cropped.resize((int(cropped.width * 0.5), cropped.height))
 
@@ -67,7 +78,13 @@ def process_video(
                     subclass == tray_classifier(cropped, device=device)
                     subclass_name = tray_classifier.names[subclass[0].probs.top1]
                 
-                annotator.box_label(box=bbox, color=colors(int(track_id), True), label=f"{name}-{track_id}-{subclass_name}")
+                # Draw bbox
+                track_color = colors(int(track_id), True)
+                annotator.box_label(box=bbox, color=track_color, label=f"{name}-{subclass_name}")
+
+                # Draw tracking line
+                points = np.hstack(track_history[track_id]).astype(np.int32).reshape((-1, 1, 2))
+                cv2.polylines(frame, [points], isClosed=False, color=track_color, thickness=5)
 
         out.write(frame)
     

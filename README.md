@@ -5,3 +5,7 @@ Dispatch Monitoring System
 - The system should also include functionality to improve model performance based on user feedback
 
 ⟩ python main.py --input-video data/first.mp4 --output-video data/tracked.mp4 --conf 0.7 --iou 0.7 --device cuda
+
+User feedback: an annotation module?
+
+Must have streaming / online mode

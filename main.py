@@ -12,7 +12,7 @@ def init_video_in_out(input_video, output_video):
     width   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height  = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps     = int(cap.get(cv2.CAP_PROP_FPS))
-    out     = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*"h264"), fps, (width, height))
+    out     = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
 
     return cap, out, width, height
 

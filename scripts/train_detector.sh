@@ -5,8 +5,8 @@ python scripts/train_yolo.py \
     --data data/detection/dataset.yaml \
     --image-size 640 \
     --out-model-dir models/detector \
-    --epochs 100 \
+    --epochs 200 \
     --save true \
     --save-period 10 \
-    --batch 10
+    --batch 6
 

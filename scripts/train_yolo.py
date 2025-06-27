@@ -10,6 +10,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--base-model", type=str, required=True, help="Name of base model, for example: yolov11m.pt, yolo11m-cls.pt")
     parser.add_argument("--data", "-d", type=str, required=True)
+    parser.add_argument("--image-size", "-imgsz", type=int, required=True)
     parser.add_argument("--out-model-dir", "-o", type=str, required=True)
     parser.add_argument("--epochs", "-e", type=int, default=10)
     parser.add_argument("--save", "-s", default="false", choices=["true", "false"])
@@ -19,6 +20,7 @@ if __name__ == "__main__":
     args            = parser.parse_args()
     BASE_MODEL      = args.base_model
     DATA            = Path(args.data)
+    IMAGE_SIZE      = args.image_size
     OUT_MODEL_DIR   = Path(args.out_model_dir)
     EPOCHS          = int(args.epochs)
     BATCH           = int(args.batch)
@@ -30,6 +32,7 @@ if __name__ == "__main__":
 
     model.train(
         data=DATA, 
+        imgsz=IMAGE_SIZE,
         epochs=EPOCHS, 
         batch=BATCH,
         save=SAVE,

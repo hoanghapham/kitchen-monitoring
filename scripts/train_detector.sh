@@ -3,6 +3,7 @@
 python scripts/train_yolo.py \
     --base-model yolo11m.pt \
     --data data/detection/dataset.yaml \
+    --image-size 640 \
     --out-model-dir models/detector \
     --epochs 100 \
     --save true \

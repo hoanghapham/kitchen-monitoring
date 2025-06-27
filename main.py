@@ -24,7 +24,8 @@ def process_video(
         height: int,
         detector: YOLO, 
         dish_classifier: YOLO, 
-        tray_classifier: YOLO
+        tray_classifier: YOLO,
+        device="cpu"
     ):
 
     # Iterate through the frames in the video
@@ -42,7 +43,8 @@ def process_video(
             persist=True, 
             conf=0.1, 
             iou=0.7, 
-            imgsz=(width, height)
+            imgsz=(width, height),
+            device=device
         )
 
         if tracking_results[0].boxes.is_track and tracking_results[0].boxes is not None:
@@ -54,13 +56,13 @@ def process_video(
             # Iterate through tracking results, classify dish and tray
             for bbox, cls, name, track_id in zip(boxes, classes, names, track_ids):
                 cropped = crop_image(frame, bbox)
-                cropped = cropped.resize((int(cropped.width * 0.5), cropped.height))
+                # cropped = cropped.resize((int(cropped.width * 0.5), cropped.height))
 
                 if cls == 0:    # dish
-                    subclass = dish_classifier(cropped)
+                    subclass = dish_classifier(cropped, device=device)
                     subclass_name = dish_classifier.names[subclass[0].probs.top1]
                 elif cls == 1:  # tray
-                    subclass == tray_classifier(cropped)
+                    subclass == tray_classifier(cropped, device=device)
                     subclass_name = tray_classifier.names[subclass[0].probs.top1]
                 
                 annotator.box_label(box=bbox, color=colors(int(track_id), True), label=f"{name}-{track_id}-{subclass_name}")

@@ -6,6 +6,7 @@ workpad/*
 *.mp4
 *.cache
 *_split
+*.pt
 
 # Python-generated files
 __pycache__/

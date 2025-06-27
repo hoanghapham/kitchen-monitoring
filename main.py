@@ -83,11 +83,15 @@ if __name__ == "__main__":
     parser.add_argument("--output-video", "-o", type=str, required=True)
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--iou", type=float, default=0.7)
+    parser.add_argument("--device", type=str, default="cpu")
 
 
     args            = parser.parse_args()
     INPUT_VIDEO     = Path(args.input_video)
     OUTPUT_VIDEO    = Path(args.output_video)
+    CONF            = float(args.conf)
+    IOU             = float(args.iou)
+    DEVICE          = args.device
 
     if OUTPUT_VIDEO.exists():
         overwrite = input("Output video already exists. Overwrite? (y/n) ")
@@ -101,4 +105,11 @@ if __name__ == "__main__":
     tray_classifier = YOLO("models/tray_classifier/train/weights/best.pt")
 
     cap, out, width, height = init_video_in_out(INPUT_VIDEO, OUTPUT_VIDEO)
-    process_video(cap, out, width, height, detector, dish_classifier, tray_classifier)
+    process_video(
+        cap, out, 
+        width, height, 
+        detector, dish_classifier, tray_classifier,
+        CONF,
+        IOU,
+        DEVICE
+    )

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import subprocess
 from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
@@ -9,12 +10,15 @@ from ultralytics.utils.plotting import Annotator, colors
 from kitchen.visual_tasks import crop_image
 
 
-def init_video_in_out(input_video, output_video):
+temp_video = "temp/temp_video.mp4"
+
+def init_video_in_out(input_video):
     cap     = cv2.VideoCapture(input_video)
     width   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height  = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps     = int(cap.get(cv2.CAP_PROP_FPS))
-    out     = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
+
+    out     = cv2.VideoWriter(temp_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
 
     return cap, out, width, height
 
@@ -22,6 +26,7 @@ def init_video_in_out(input_video, output_video):
 def process_video(
         cap: cv2.VideoCapture, 
         out: cv2.VideoWriter, 
+        output_video: str|Path,
         width: int,
         height: int,
         detector: YOLO, 
@@ -90,6 +95,8 @@ def process_video(
     
     out.release()
     cap.release()
+    subprocess.call(args=f"ffmpeg -y -i {temp_video} -c:v libx264 {output_video}".split(" "))
+
 
 if __name__ == "__main__":
 
@@ -121,9 +128,10 @@ if __name__ == "__main__":
     dish_classifier = YOLO("models/dish_classifier/train/weights/best.pt")
     tray_classifier = YOLO("models/tray_classifier/train/weights/best.pt")
 
-    cap, out, width, height = init_video_in_out(INPUT_VIDEO, OUTPUT_VIDEO)
+    cap, out, width, height = init_video_in_out(INPUT_VIDEO)
     process_video(
         cap, out, 
+        OUTPUT_VIDEO,
         width, height, 
         detector, dish_classifier, tray_classifier,
         CONF,

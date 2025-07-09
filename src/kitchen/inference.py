@@ -13,6 +13,7 @@ from utils.schemas import PredictionOutput
 
 temp_video = "cache/temp_video.mp4"
 
+
 def get_video_stats(video_path: str):
     cap         = cv2.VideoCapture(video_path)
     width       = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -33,14 +34,15 @@ def get_video_stats(video_path: str):
 
 
 def get_video_frame(video_path: str, frame_idx: float) -> PILImage:
+    frame_idx = frame_idx - 1 # Count from 1
     stats = get_video_stats(video_path)
     frame_msecs = frame_idx * 1000 / stats["fps"]
 
     cap = cv2.VideoCapture(video_path)
     cap.set(cv2.CAP_PROP_POS_MSEC, frame_msecs)
     ret, frame = cap.read()
-    # frame_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-    return frame
+    frame_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    return frame_img
 
 
 def process_video(

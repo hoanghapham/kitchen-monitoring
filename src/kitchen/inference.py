@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import subprocess
+from PIL import Image
+from PIL.Image import Image as PILImage
 from collections import defaultdict
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
@@ -10,6 +12,35 @@ from utils.schemas import PredictionOutput
 
 
 temp_video = "cache/temp_video.mp4"
+
+def get_video_stats(video_path: str):
+    cap         = cv2.VideoCapture(video_path)
+    width       = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height      = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps         = int(cap.get(cv2.CAP_PROP_FPS))
+    n_frames    = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    length      = n_frames * 1000 / fps  # in msecs
+
+    stats = {
+        "width": width,
+        "height": height,
+        "n_frames": n_frames,
+        "length": length,
+        "fps": fps
+    }
+
+    return stats
+
+
+def get_video_frame(video_path: str, frame_idx: float) -> PILImage:
+    stats = get_video_stats(video_path)
+    frame_msecs = frame_idx * 1000 / stats["fps"]
+
+    cap = cv2.VideoCapture(video_path)
+    cap.set(cv2.CAP_PROP_POS_MSEC, frame_msecs)
+    ret, frame = cap.read()
+    # frame_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    return frame
 
 
 def process_video(

@@ -1,6 +1,5 @@
 import uvicorn
 from fastapi import FastAPI
-import torch
 from ultralytics import YOLO
 from pydantic import ValidationError
 from pathlib import Path
@@ -10,13 +9,20 @@ from utils.schemas import PredictionInput, PredictionOutput
 
 
 # Init model
-PROJECt_DIR     = Path(__file__).parent.parent.parent 
-detector        = YOLO(PROJECt_DIR / "models/detector//train/weights/best.pt")
-dish_classifier = YOLO(PROJECt_DIR / "models/dish_classifier/train/weights/best.pt")
-tray_classifier = YOLO(PROJECt_DIR / "models/tray_classifier/train/weights/best.pt")
+PROJECT_DIR     = Path(__file__).parent.parent.parent 
+CACHE_DIR       = PROJECT_DIR / "cache"
+detector        = YOLO(PROJECT_DIR / "models/detector//train/weights/best.pt")
+dish_classifier = YOLO(PROJECT_DIR / "models/dish_classifier/train/weights/best.pt")
+tray_classifier = YOLO(PROJECT_DIR / "models/tray_classifier/train/weights/best.pt")
 
 # DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+# TODO: Clear cache when starting up
 
+if CACHE_DIR.exists():
+    for file in CACHE_DIR.glob("*"):
+        file.unlink()
+else:
+    CACHE_DIR.mkdir(parents=True)
 
 app = FastAPI()
 

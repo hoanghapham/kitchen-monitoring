@@ -8,6 +8,7 @@ workpad/*
 *_split
 *.pt
 temp/*
+cache/*
 
 # Python-generated files
 __pycache__/

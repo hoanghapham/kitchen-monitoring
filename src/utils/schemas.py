@@ -2,9 +2,11 @@ from pydantic import BaseModel
 
 
 class PredictionInput(BaseModel):
-    input_video: str
+    in_video_path: str
+    out_video_path: str
     conf: float
     iou: float
+    device: str
 
 
 class PredictionOutput(BaseModel):

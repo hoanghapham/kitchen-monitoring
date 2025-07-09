@@ -9,7 +9,7 @@ from kitchen.visual_tasks import crop_image
 from utils.schemas import PredictionOutput
 
 
-temp_video = "temp/temp_video.mp4"
+temp_video = "cache/temp_video.mp4"
 
 
 def process_video(
@@ -23,10 +23,11 @@ def process_video(
     device="cpu"
 ):
     cap     = cv2.VideoCapture(input_video)
-    out     = cv2.VideoWriter(temp_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
     width   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height  = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps     = int(cap.get(cv2.CAP_PROP_FPS))
+    
+    out     = cv2.VideoWriter(temp_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
 
     track_history = defaultdict(lambda: [])
 

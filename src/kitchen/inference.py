@@ -1,41 +1,33 @@
 import cv2
 import numpy as np
 import subprocess
-from pathlib import Path
-from argparse import ArgumentParser
-from PIL import Image
 from collections import defaultdict
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
+
 from kitchen.visual_tasks import crop_image
+from utils.schemas import PredictionOutput
 
 
 temp_video = "temp/temp_video.mp4"
 
-def init_video_in_out(input_video):
+
+def process_video(
+    input_video: str,
+    output_video: str,
+    detector: YOLO, 
+    dish_classifier: YOLO, 
+    tray_classifier: YOLO,
+    conf: float = 0.25,
+    iou: float = 0.7,
+    device="cpu"
+):
     cap     = cv2.VideoCapture(input_video)
+    out     = cv2.VideoWriter(temp_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
     width   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height  = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps     = int(cap.get(cv2.CAP_PROP_FPS))
 
-    out     = cv2.VideoWriter(temp_video, cv2.VideoWriter_fourcc(*"MP4V"), fps, (width, height))
-
-    return cap, out, width, height
-
-
-def process_video(
-        cap: cv2.VideoCapture, 
-        out: cv2.VideoWriter, 
-        output_video: str|Path,
-        width: int,
-        height: int,
-        detector: YOLO, 
-        dish_classifier: YOLO, 
-        tray_classifier: YOLO,
-        conf: float = 0.25,
-        iou: float = 0.7,
-        device="cpu"
-    ):
     track_history = defaultdict(lambda: [])
 
     # Iterate through the frames in the video
@@ -73,8 +65,8 @@ def process_video(
                 if len(track_history[track_id]) > 30:
                     track_history[track_id].pop(0)
 
+                # Crop image using detected box to be fed into the classifiers
                 cropped = crop_image(frame, bbox)
-                # cropped = cropped.resize((int(cropped.width * 0.5), cropped.height))
 
                 if cls == 0:    # dish
                     subclass = dish_classifier(cropped, device=device)
@@ -95,46 +87,7 @@ def process_video(
     
     out.release()
     cap.release()
+
+    # Convert cv2 format to x264
     subprocess.call(args=f"ffmpeg -y -i {temp_video} -c:v libx264 {output_video}".split(" "))
-
-
-if __name__ == "__main__":
-
-    PROJECT_DIR = Path(__file__).parent.parent
-
-    parser = ArgumentParser()
-    parser.add_argument("--input-video", "-i", type=str, required=True)
-    parser.add_argument("--output-video", "-o", type=str, required=True)
-    parser.add_argument("--conf", type=float, default=0.25)
-    parser.add_argument("--iou", type=float, default=0.7)
-    parser.add_argument("--device", type=str, default="cpu")
-
-
-    args            = parser.parse_args()
-    INPUT_VIDEO     = Path(args.input_video)
-    OUTPUT_VIDEO    = Path(args.output_video)
-    CONF            = float(args.conf)
-    IOU             = float(args.iou)
-    DEVICE          = args.device
-
-    if OUTPUT_VIDEO.exists():
-        overwrite = input("Output video already exists. Overwrite? (y/n) ")
-        if overwrite.lower() != "y":
-            exit()
-        else:
-            OUTPUT_VIDEO.unlink()
-
-    detector        = YOLO("models/detector//train/weights/best.pt")
-    dish_classifier = YOLO("models/dish_classifier/train/weights/best.pt")
-    tray_classifier = YOLO("models/tray_classifier/train/weights/best.pt")
-
-    cap, out, width, height = init_video_in_out(INPUT_VIDEO)
-    process_video(
-        cap, out, 
-        OUTPUT_VIDEO,
-        width, height, 
-        detector, dish_classifier, tray_classifier,
-        CONF,
-        IOU,
-        DEVICE
-    )
+    return PredictionOutput(output_video=output_video)

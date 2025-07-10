@@ -10,7 +10,7 @@ from kitchen.visual_tasks import bbox_xyxy_to_yolo_format
 from utils.file_tools import write_json_file, write_list_to_text_file
 
 
-PROJECT_DIR         = Path(__file__).parent.parent.parent
+PROJECT_DIR         = Path(__file__).parent.parent.parent.parent
 DATA_DIR            = PROJECT_DIR / "data/"
 
 

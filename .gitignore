@@ -9,6 +9,7 @@ workpad/*
 *.pt
 temp/*
 cache/*
+data/retrain/*
 
 # Python-generated files
 __pycache__/

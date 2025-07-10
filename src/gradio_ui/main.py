@@ -2,7 +2,10 @@ import os
 import torch
 import gradio as gr
 import uvicorn
+import webbrowser
+import time
 from pathlib import Path
+from urllib.parse import urljoin
 
 from app.main import app
 
@@ -23,8 +26,18 @@ GRADIO_CACHE_DIR    = ".gradio_cache"
 GRADIO_CUSTOM_PATH  = "/gradio"
 DEVICE              = "cuda" if torch.cuda.is_available() else "cpu"
 DATA_DIR            = PROJECT_DIR / "data/"
+GRADIO_URL          = urljoin("http://0.0.0.0:8000/", GRADIO_CUSTOM_PATH)
 
 os.environ["GRADIO_CACHE_DIR"]  = GRADIO_CACHE_DIR
+
+
+def open_in_browser():
+    time.sleep(1)  # Wait a bit for server to start
+    webbrowser.open(GRADIO_URL)
+
+
+def start_app():
+    uvicorn.run("gradio_ui.main:app", host="0.0.0.0", port=8000)
 
 
 def to_reannotate_tab():
@@ -40,12 +53,12 @@ theme = gr.themes.Default(
     primary_hue="blue",
     secondary_hue="blue",
     neutral_hue="slate",
-    font=[
-        gr.themes.GoogleFont("Open Sans"),
-        "ui-sans-serif",
-        "system-ui",
-        "sans-serif",
-    ],
+    # font=[
+    #     gr.themes.GoogleFont("Open Sans"),
+    #     "ui-sans-serif",
+    #     "system-ui",
+    #     "sans-serif",
+    # ],
 )
 
 content = """Detect dish and trays, and classify dish and trays into three sub-categories (empty, not_empty, kakigori).
@@ -96,4 +109,5 @@ app = gr.mount_gradio_app(app, demo, path=GRADIO_CUSTOM_PATH)
 
 
 if __name__ == "__main__":
-    uvicorn.run("gradio_ui.main:app", host="0.0.0.0", port=8000)
+    print(f"\nTo view the app, go to: {GRADIO_URL}\n")
+    start_app()

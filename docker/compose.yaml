@@ -1,0 +1,11 @@
+name: dispatch-monitoring
+
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8000:8000
+
+

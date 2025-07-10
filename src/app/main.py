@@ -11,9 +11,9 @@ from utils.schemas import PredictionInput, PredictionOutput
 # Init model
 PROJECT_DIR     = Path(__file__).parent.parent.parent 
 CACHE_DIR       = PROJECT_DIR / "cache"
-detector        = YOLO(PROJECT_DIR / "models/detector//train/weights/best.pt")
-dish_classifier = YOLO(PROJECT_DIR / "models/dish_classifier/train/weights/best.pt")
-tray_classifier = YOLO(PROJECT_DIR / "models/tray_classifier/train/weights/best.pt")
+detector        = YOLO(PROJECT_DIR / "models/detector/best.pt")
+dish_classifier = YOLO(PROJECT_DIR / "models/dish_classifier/best.pt")
+tray_classifier = YOLO(PROJECT_DIR / "models/tray_classifier/best.pt")
 
 # DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # TODO: Clear cache when starting up
@@ -54,3 +54,4 @@ def predict(content: dict):
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000)
+

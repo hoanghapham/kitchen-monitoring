@@ -45,7 +45,6 @@ def detect_objects(in_video, conf, iou, result_collection: list):
     response = requests.post(
         APP_URL + "/predict", 
         json=pred_input.model_dump(), 
-        timeout=300
     )
     progress(1, "Done")
 

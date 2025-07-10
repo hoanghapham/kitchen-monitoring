@@ -53,12 +53,12 @@ theme = gr.themes.Default(
     primary_hue="blue",
     secondary_hue="blue",
     neutral_hue="slate",
-    # font=[
-    #     gr.themes.GoogleFont("Open Sans"),
-    #     "ui-sans-serif",
-    #     "system-ui",
-    #     "sans-serif",
-    # ],
+    font=[
+        gr.themes.GoogleFont("Open Sans"),
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+    ],
 )
 
 content = """Detect dish and trays, and classify dish and trays into three sub-categories (empty, not_empty, kakigori).

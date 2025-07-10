@@ -33,9 +33,9 @@ def get_annotator(ori_frame_disp):
 
 def save_detection_ann(image: np.ndarray, json_ann: dict):
     out_ann_id = uuid.uuid4()
-    json_dir = DATA_DIR / f"retrain/detection/json/"
-    image_dir = DATA_DIR / f"retrain/detection/image"
-    label_dir = DATA_DIR / f"retrain/detection/label"
+    json_dir = DATA_DIR / "retrain/detection/json/"
+    image_dir = DATA_DIR / "retrain/detection/image"
+    label_dir = DATA_DIR / "retrain/detection/label"
 
     if not json_dir.exists():
         json_dir.mkdir(parents=True)

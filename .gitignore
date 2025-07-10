@@ -3,7 +3,6 @@ models/*
 runs/*
 workpad/*
 .DS_Store
-*.mp4
 *.cache
 *_split
 *.pt

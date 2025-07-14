@@ -29,7 +29,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"app_name": "Kitchen Dispatch Monitoring"}
+    return {"app_name": "Kitchen Monitoring"}
 
 
 @app.post("/predict/", response_model=PredictionOutput)

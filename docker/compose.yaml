@@ -1,4 +1,4 @@
-name: dispatch-monitoring
+name: kitchen-monitoring
 
 services:
   server:

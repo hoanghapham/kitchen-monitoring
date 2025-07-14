@@ -66,11 +66,11 @@ After inference, user can also choose to reannotate some frames to create new tr
 """
 
 with gr.Blocks(
-    title="Dispatch Monitoring",
+    title="Kitchen Monitoring",
     theme=theme
 ) as demo:
     
-    gr.Markdown("# Dispatch Monitoring")
+    gr.Markdown("# Kitchen Monitoring")
     gr.Markdown(value=content)
 
     with gr.Tabs(key="all_tabs") as tabs:

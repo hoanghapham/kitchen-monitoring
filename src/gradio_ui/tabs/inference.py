@@ -58,6 +58,8 @@ def detect_objects(in_video, conf, iou, result_collection: list):
 def activate(collection):
     return gr.update(interactive=collection is not None)
 
+def deactivate():
+    return gr.update(interactive=False)
 
 def update_out_video(collection):
     return collection[-1]
@@ -79,7 +81,7 @@ with gr.Blocks() as inference_block:
     
     with gr.Row():
         in_video = gr.Video(label="Upload video", sources="upload")
-        out_video = gr.Video(label="Inference Result", interactive=False)
+        out_video = gr.Video(label="Inference Result", interactive=False, )
 
     with gr.Row():
         with gr.Column():
@@ -93,19 +95,19 @@ with gr.Blocks() as inference_block:
 
     # Dataflow
     # Activate the Detect Objects button when a video is uploaded
-    in_video.change(activate, [in_video], [submit_btn])
-    
+    in_video.upload(activate, [in_video], [submit_btn])
+    in_video.clear(deactivate, [], [submit_btn])
     # Get and set video stats having results
     out_video.change(set_video_stats, inputs=[in_video], outputs=[video_stats])
 
-    # Inference
-    submit_btn.click(
+    # Click button -> deactivate btn and run task -> then activate again
+    submit_btn.click(deactivate, [], [submit_btn]).then(
         detect_objects,
         inputs=[in_video, conf, iou, result_collection],
         outputs=[result_collection],
         show_progress="full",
         show_progress_on=[out_video]
-    )
+    ).then(activate, [], [submit_btn])
 
 
     # When a result is available:

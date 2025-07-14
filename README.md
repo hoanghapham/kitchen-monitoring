@@ -2,6 +2,8 @@
 
 This project simulates a monitoring system for kitchens, which performs object detection and tracking for two types of items (dish, tray), and further classifies the items into one of the three sub-categories (empty, not_empty, kakigori - a type of Japanese shaved ice dessert).
 
+![](assets/demo.gif)
+
 Components:
 
 - Backend: FastAPI
@@ -11,11 +13,12 @@ Components:
     - Detector: `yolo11m`
     - Classifier: `yolo11m-cls`
 
-Inference flow:
+## Inference flow:
 
 ![](assets/inference_flow.png)
 
-# Workflow
+
+## Workflow
 
 In reality the system should be able to handle video stream from camera, but for demo purpose, it process a video in an offline manner. 
 

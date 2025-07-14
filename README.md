@@ -1,6 +1,6 @@
 # Kitchen Monitoring System
 
-This project simulate a monitoring system for kitchens, which performs object detection and tracking for two types of items (`dish`, `tray`), and further classifies the items into one of the three sub categories (`empty`, `not_empty`, `kakigori` - a type of Japanese shaved ice dessert).
+This project simulates a monitoring system for kitchens, which performs object detection and tracking for two types of items (dish, tray), and further classifies the items into one of the three sub-categories (empty, not_empty, kakigori - a type of Japanese shaved ice dessert).
 
 Components:
 

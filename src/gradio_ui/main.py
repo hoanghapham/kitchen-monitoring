@@ -82,8 +82,8 @@ with gr.Blocks(
         
     
     # Button to activate the Reannotate tab and move there
-    reannotate_btn.click(activate, inputs=[infr_result_collection], outputs=[tab_reannotate])
-    reannotate_btn.click(to_reannotate_tab, [], [tabs])
+    reannotate_btn.click(activate, None, [tab_reannotate])
+    reannotate_btn.click(to_reannotate_tab, None, [tabs])
 
     # Sync objects between the main app and the reannotate tab
     infr_in_video.change(

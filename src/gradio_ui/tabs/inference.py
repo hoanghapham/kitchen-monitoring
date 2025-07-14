@@ -55,8 +55,8 @@ def detect_objects(in_video, conf, iou, result_collection: list):
         raise gr.Error(f"API Error: {response.status_code}")
 
 
-def activate(collection):
-    return gr.update(interactive=collection is not None)
+def activate():
+    return gr.update(interactive=True)
 
 def deactivate():
     return gr.update(interactive=False)
@@ -95,24 +95,25 @@ with gr.Blocks() as inference_block:
 
     # Dataflow
     # Activate the Detect Objects button when a video is uploaded
-    in_video.upload(activate, [in_video], [submit_btn])
-    in_video.clear(deactivate, [], [submit_btn])
+    in_video.upload(activate, None, [submit_btn])
+    in_video.clear(deactivate, None, [submit_btn])
     # Get and set video stats having results
     out_video.change(set_video_stats, inputs=[in_video], outputs=[video_stats])
 
     # Click button -> deactivate btn and run task -> then activate again
-    submit_btn.click(deactivate, [], [submit_btn]).then(
+    submit_btn.click(deactivate, None, [submit_btn]).then(
         detect_objects,
         inputs=[in_video, conf, iou, result_collection],
         outputs=[result_collection],
         show_progress="full",
         show_progress_on=[out_video]
-    ).then(activate, [], [submit_btn])
+    ).then(activate, None, [submit_btn])
 
 
     # When a result is available:
     # - Activate Reannnotate button
     # - Update out_video placeholder
-    result_collection.change(activate, [result_collection], [reannotate_btn])
+    result_collection.change(activate, None, [reannotate_btn])
+    in_video.clear(deactivate, None, [reannotate_btn])
     result_collection.change(update_out_video, [result_collection], [out_video])
     
